@@ -1,9 +1,24 @@
 import json
 from flask import Blueprint, render_template, request, redirect, url_for
 from .models import db, Recipe, MealPlan  # Import your models if needed
+from functools import wraps
+from flask import request, jsonify
 
 # Define the blueprint
 main = Blueprint('main', __name__)
+
+BLOCKED_IPS = {'127.0.0.1'}  # Add IPs you want to block
+
+def check_ip(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        client_ip = request.remote_addr
+        print(f"Incoming request from IP: {client_ip}")  # Log incoming IP
+        if client_ip in BLOCKED_IPS:
+            print(f"Blocked request from IP: {client_ip}")  # Log blocked IP
+            return jsonify({'error': 'Your IP is blocked.'}), 403
+        return f(*args, **kwargs)
+    return wrapper
 
 @main.route('/')
 def home():
@@ -128,3 +143,10 @@ def delete_recipe(recipe_id):
 
     # Redirect back to the recipes page
     return redirect(url_for('main.list_recipes'))
+
+@main.route('/api/recipes', methods=['GET'])
+@check_ip
+def get_recipes():
+    # Fetch recipes logic
+    recipes = Recipe.query.all()
+    return jsonify({'recipes': [recipe.name for recipe in recipes]})
