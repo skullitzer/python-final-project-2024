@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Add Recipe</h2>
+<form action="{{ url_for('main.save_recipe') }}" method="POST">
+    <label for="name">Recipe Name:</label>
+    <input type="text" name="name" required><br>
+
+    <label for="ingredients">Ingredients:</label>
+    <div id="jsoneditor" style="height: 300px; border: 1px solid #ccc;"></div>
+    <input type="hidden" name="ingredients" id="ingredients"> <!-- Hidden input to store JSON -->
+
+    <label for="instructions">Instructions:</label>
+    <textarea name="instructions" required></textarea><br>
+
+    <label for="category">Category:</label>
+    <input type="text" name="category"><br>
+
+    <button type="submit" onclick="updateIngredientsField()">Save Recipe</button>
+</form>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/9.0.0/jsoneditor.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/9.0.0/jsoneditor.min.js"></script>
+
+<script>
+    // Placeholder JSON for ingredients
+    const placeholderIngredients = [
+        {"ingredient": "Name", "quantity": "Amount"},
+        {"ingredient": "Name", "quantity": "Amount"},
+        {"ingredient": "Name", "quantity": "Amount"}
+    ];
+
+    // Initialize JSON Editor with placeholder data
+    const container = document.getElementById('jsoneditor');
+    const options = {
+        mode: 'code', // Modes: tree, view, form, code, text
+    };
+    const editor = new JSONEditor(container, options, placeholderIngredients);
+
+    // Update the hidden input field before submitting the form
+    function updateIngredientsField() {
+        const ingredientsInput = document.getElementById('ingredients');
+        ingredientsInput.value = JSON.stringify(editor.get()); // Get JSON from editor and store it
+    }
+</script>
+{% endblock %}

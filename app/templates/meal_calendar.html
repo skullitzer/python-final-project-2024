@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Meal Calendar</h2>
+<table border="1">
+    <tr>
+        <th>Date</th>
+        <th>Meal</th>
+    </tr>
+    {% for meal in meals %}
+    <tr>
+        <td>{{ meal.date }}</td>
+        <td>{{ meal.recipe.name }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h3>Add Meal to Calendar</h3>
+<form action="{{ url_for('main.add_meal') }}" method="POST">
+    <label for="date">Date (YYYY-MM-DD):</label>
+    <input type="text" name="date" required><br>
+    <label for="recipe_id">Recipe ID:</label>
+    <input type="number" name="recipe_id" required><br>
+    <button type="submit">Add Meal</button>
+</form>
+{% endblock %}

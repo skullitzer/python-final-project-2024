@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Shopping List</h2>
+<ul>
+    {% for ingredient, quantity in shopping_list.items() %}
+    <li>{{ ingredient }}: {{ quantity }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}
