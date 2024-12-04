@@ -3,6 +3,7 @@ from flask import Blueprint, render_template, request, redirect, url_for
 from .models import db, Recipe, MealPlan  # Import your models if needed
 from functools import wraps
 from flask import request, jsonify
+from datetime import datetime
 
 # Define the blueprint
 main = Blueprint('main', __name__)
@@ -58,7 +59,8 @@ def save_recipe():
     except json.JSONDecodeError as e:
         # Print error details
         print(f"Error parsing ingredients JSON: {str(e)}")
-        return "Invalid ingredients format. Please provide valid JSON.", 400
+        # Pass an error message to the add_recipe.html template
+        return render_template('add_recipe.html', error="Invalid JSON format for ingredients. Please fix it.")
 
     new_recipe = Recipe(name=name, ingredients=ingredients, instructions=instructions, category=category)
 
@@ -81,12 +83,27 @@ def meal_calendar():
 @main.route('/add_meal', methods=['POST'])
 def add_meal():
     date = request.form['date']
-    recipe_id = int(request.form['recipe_id'])
+    recipe_id = request.form['recipe_id']
 
+    # Validate date format
+    try:
+        datetime.strptime(date, '%Y-%m-%d')
+    except ValueError:
+        print(f"Invalid date format: {date}")
+        return render_template('meal_calendar.html', error="Invalid date format. Please use YYYY-MM-DD.", meals=MealPlan.query.all())
+
+    # Validate recipe ID
+    recipe = Recipe.query.get(recipe_id)
+    if not recipe:
+        print(f"Recipe ID does not exist: {recipe_id}")
+        return render_template('meal_calendar.html', error="Recipe ID does not exist. Please enter a valid ID.", meals=MealPlan.query.all())
+
+    # Save the meal if validations pass
     new_meal = MealPlan(date=date, recipe_id=recipe_id)
     db.session.add(new_meal)
     db.session.commit()
 
+    print(f"Meal added: {new_meal}")
     return redirect(url_for('main.meal_calendar'))
 
 @main.route('/shopping_list')
