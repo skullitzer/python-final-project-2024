@@ -18,11 +18,6 @@ Automatic Shopping List Generation
 
 Generate shopping lists based on meal plans, with quantities calculated from recipe scaling.
 Combine ingredient amounts from multiple recipes.
-Nutritional Information Calculation
-
-Fetch nutritional details for recipes using a nutritional API.
-Analyze daily or weekly meal plans for calorie and macronutrient intake.
-Recipe Scaling Functionality
 
 Scale recipes up or down based on the number of servings needed.
 Automatically adjust ingredient quantities.
@@ -32,6 +27,5 @@ Real-Time Integration with Grocery Stores: The app will not allow real-time groc
 Advanced Meal Recommendations: It will not use machine learning to suggest meal plans or recipes.
 Technologies
 Flask: For backend development and handling HTTP requests.
-SQLite: For lightweight and simple database management.
-Nutritional Information API: To fetch data for ingredient and recipe analysis (e.g., Edamam API, Nutritionix API).
+SQL: For lightweight and simple database management.
 Jinja2 Templating Engine: To render dynamic content in HTML.
